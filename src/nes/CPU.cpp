@@ -1,7 +1,9 @@
-#include "CPU.h"
-#include "CPUOpcodes.h"
-#include "Log.h"
+#include "nes/CPU.h"
+#include "nes/CPUOpcodes.h"
+#include "utility/Log.h"
 #include <iomanip>
+
+using namespace utility;
 
 namespace nes
 {

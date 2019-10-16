@@ -1,9 +1,11 @@
-#include "Emulator.h"
-#include "Log.h"
+#include "nes/Emulator.h"
+#include "utility/Log.h"
 
 #include <thread>
 #include <chrono>
 #include <utility>
+
+using namespace utility;
 
 namespace nes
 {

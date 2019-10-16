@@ -1,4 +1,4 @@
-#include "VirtualScreen.h"
+#include "nes/VirtualScreen.h"
 
 namespace nes
 {

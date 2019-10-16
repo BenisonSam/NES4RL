@@ -1,4 +1,4 @@
-#include "Controller.h"
+#include "nes/Controller.h"
 
 namespace nes
 {

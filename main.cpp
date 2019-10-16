@@ -1,7 +1,9 @@
-#include "Emulator.h"
-#include "Log.h"
+#include "nes/Emulator.h"
+#include "utility/Log.h"
 #include <string>
 #include <sstream>
+
+using namespace utility;
 
 namespace nes
 {
@@ -13,14 +15,14 @@ namespace nes
 int main(int argc, char **argv)
 {
 	std::ofstream logFile("nes_rl.log"), cpuTraceFile;
-	nes::TeeStream logTee(logFile, std::cout);
+	utility::TeeStream logTee(logFile, std::cout);
 
 	if (logFile.is_open() && logFile.good())
-		nes::Log::get().setLogStream(logTee);
+		Log::get().setLogStream(logTee);
 	else
-		nes::Log::get().setLogStream(std::cout);
+		Log::get().setLogStream(std::cout);
 
-	nes::Log::get().setLevel(nes::Info);
+	Log::get().setLevel(Info);
 
 	std::string path;
 
@@ -54,17 +56,17 @@ int main(int argc, char **argv)
 			return 0;
 		} else if (std::strcmp(argv[i], "--log-cpu") == 0)
 		{
-			nes::Log::get().setLevel(nes::CpuTrace);
+			Log::get().setLevel(CpuTrace);
 			cpuTraceFile.open("nes.cpudump");
-			nes::Log::get().setCpuTraceStream(cpuTraceFile);
-			LOG(nes::Info) << "CPU logging set." << std::endl;
+			Log::get().setCpuTraceStream(cpuTraceFile);
+			LOG(Info) << "CPU logging set." << std::endl;
 		} else if (std::strcmp(argv[i], "-s") == 0 || std::strcmp(argv[i], "--scale") == 0)
 		{
 			float scale;
 			std::stringstream ss;
 			if (i + 1 < argc && ss << argv[i + 1] && ss >> scale)
 				emulator.setVideoScale(scale);
-			else LOG(nes::Error) << "Setting scale from argument failed" << std::endl;
+			else LOG(Error) << "Setting scale from argument failed" << std::endl;
 			++i;
 		} else if (std::strcmp(argv[i], "-w") == 0 || std::strcmp(argv[i], "--width") == 0)
 		{
@@ -72,7 +74,7 @@ int main(int argc, char **argv)
 			std::stringstream ss;
 			if (i + 1 < argc && ss << argv[i + 1] && ss >> width)
 				emulator.setVideoWidth(width);
-			else LOG(nes::Error) << "Setting width from argument failed" << std::endl;
+			else LOG(Error) << "Setting width from argument failed" << std::endl;
 			++i;
 		} else if (std::strcmp(argv[i], "-H") == 0 || std::strcmp(argv[i], "--height") == 0)
 		{
@@ -80,7 +82,7 @@ int main(int argc, char **argv)
 			std::stringstream ss;
 			if (i + 1 < argc && ss << argv[i + 1] && ss >> height)
 				emulator.setVideoHeight(height);
-			else LOG(nes::Error) << "Setting height from argument failed" << std::endl;
+			else LOG(Error) << "Setting height from argument failed" << std::endl;
 			++i;
 		} else if (argv[i][0] != '-')
 			path = argv[i];

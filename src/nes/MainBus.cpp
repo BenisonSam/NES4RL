@@ -1,5 +1,7 @@
-#include "MainBus.h"
-#include "Log.h"
+#include "nes/MainBus.h"
+#include "utility/Log.h"
+
+using namespace utility;
 
 namespace nes
 {

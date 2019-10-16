@@ -1,7 +1,9 @@
-#include "PPU.h"
+#include "nes/PPU.h"
 
 #include <utility>
-#include "Log.h"
+#include "utility/Log.h"
+
+using namespace utility;
 
 namespace nes
 {

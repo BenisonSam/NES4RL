@@ -6,7 +6,9 @@
 #include <functional>
 #include <memory>
 #include "Cartridge.h"
-#include "Mapper.h"
+#include "nes/mapper/Mapper.h"
+
+using namespace nes::mapper;
 
 namespace nes
 {

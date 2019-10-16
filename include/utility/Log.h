@@ -12,14 +12,14 @@
 #endif
 
 #define LOG(level) \
-if ((level) > nes::Log::get().getLevel()) ; \
-else nes::Log::get().getStream() << '[' << __FILENAME__ << ":" << std::dec << __LINE__ << "] "
+if ((level) > utility::Log::get().getLevel()) ; \
+else utility::Log::get().getStream() << '[' << __FILENAME__ << ":" << std::dec << __LINE__ << "] "
 
 #define LOG_CPU \
-if (nes::CpuTrace != nes::Log::get().getLevel()) ; \
-else nes::Log::get().getCpuTraceStream()
+if (utility::CpuTrace != utility::Log::get().getLevel()) ; \
+else utility::Log::get().getCpuTraceStream()
 
-namespace nes
+namespace utility
 {
 	enum Level
 	{

@@ -4,8 +4,10 @@
 #include <algorithm>
 #include <cctype>
 
-#include "Controller.h"
-#include "Log.h"
+#include "nes/Controller.h"
+#include "utility/Log.h"
+
+using namespace utility;
 
 namespace nes
 {

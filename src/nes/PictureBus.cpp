@@ -1,5 +1,7 @@
-#include "PictureBus.h"
-#include "Log.h"
+#include "nes/PictureBus.h"
+#include "utility/Log.h"
+
+using namespace utility;
 
 namespace nes
 {

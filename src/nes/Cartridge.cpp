@@ -1,7 +1,9 @@
-#include "Cartridge.h"
-#include "Log.h"
+#include "nes/Cartridge.h"
+#include "utility/Log.h"
 #include <fstream>
 #include <string>
+
+using namespace utility;
 
 namespace nes
 {

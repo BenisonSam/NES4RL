@@ -1,6 +1,6 @@
-#include "Log.h"
+#include "utility/Log.h"
 
-namespace nes
+namespace utility
 {
 	Log::~Log()
 	= default;

@@ -1,29 +1,34 @@
 #ifndef PICTUREBUS_H
 #define PICTUREBUS_H
+
 #include <vector>
 #include "Cartridge.h"
 #include "Mapper.h"
 
-namespace sn
+namespace nes
 {
-    class PictureBus
-    {
-        public:
-            PictureBus();
-            Byte read(Address addr);
-            void write(Address addr, Byte value);
+	class PictureBus
+	{
+	public:
+		PictureBus();
 
-            bool setMapper(Mapper *mapper);
-            Byte readPalette(Byte paletteAddr);
+		Byte read(Address addr);
 
-            void updateMirroring();
-        private:
-            std::vector<Byte> m_RAM;
-            std::size_t NameTable0, NameTable1, NameTable2, NameTable3; //indices where they start in RAM vector
+		void write(Address addr, Byte value);
 
-            std::vector<Byte> m_palette;
+		bool setMapper(Mapper *mapper);
 
-            Mapper* m_mapper;
-    };
+		Byte readPalette(Byte paletteAddr);
+
+		void updateMirroring();
+
+	private:
+		std::vector<Byte> m_RAM;
+		std::size_t NameTable0, NameTable1, NameTable2, NameTable3; //indices where they start in RAM vector
+
+		std::vector<Byte> m_palette;
+
+		Mapper *m_mapper;
+	};
 }
 #endif // PICTUREBUS_H

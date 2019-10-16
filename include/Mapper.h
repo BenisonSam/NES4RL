@@ -1,53 +1,60 @@
 #ifndef MAPPER_H
 #define MAPPER_H
+
 #include "Cartridge.h"
 #include <memory>
 #include <functional>
 
-namespace sn
+namespace nes
 {
-    enum NameTableMirroring
-    {
-        Horizontal  = 0,
-        Vertical    = 1,
-        FourScreen  = 8,
-        OneScreenLower,
-        OneScreenHigher,
-    };
+	enum NameTableMirroring
+	{
+		Horizontal = 0,
+		Vertical = 1,
+		FourScreen = 8,
+		OneScreenLower,
+		OneScreenHigher,
+	};
 
 
-    class Mapper
-    {
-        public:
-            enum Type
-            {
-                NROM  = 0,
-                SxROM = 1,
-                UxROM = 2,
-                CNROM = 3,
-            };
+	class Mapper
+	{
+	public:
+		enum Type
+		{
+			NROM = 0,
+			SxROM = 1,
+			UxROM = 2,
+			CNROM = 3,
+		};
 
-            Mapper(Cartridge& cart, Type t) : m_cartridge(cart), m_type(t) {};
-            virtual void writePRG (Address addr, Byte value) = 0;
-            virtual Byte readPRG (Address addr) = 0;
-            virtual const Byte* getPagePtr (Address addr) = 0; //for DMAs
+		Mapper(Cartridge &cart, Type t) : m_cartridge(cart), m_type(t)
+		{};
 
-            virtual Byte readCHR (Address addr) = 0;
-            virtual void writeCHR (Address addr, Byte value) = 0;
+		virtual void writePRG(Address addr, Byte value) = 0;
 
-            virtual NameTableMirroring getNameTableMirroring();
+		virtual Byte readPRG(Address addr) = 0;
 
-            bool inline hasExtendedRAM()
-            {
-                return m_cartridge.hasExtendedRAM();
-            }
+		virtual const Byte *getPagePtr(Address addr) = 0; //for DMAs
 
-            static std::unique_ptr<Mapper> createMapper (Type mapper_t, Cartridge& cart, std::function<void(void)> mirroring_cb);
+		virtual Byte readCHR(Address addr) = 0;
 
-        protected:
-            Cartridge& m_cartridge;
-            Type m_type;
-    };
+		virtual void writeCHR(Address addr, Byte value) = 0;
+
+		virtual NameTableMirroring getNameTableMirroring();
+
+		bool inline hasExtendedRAM()
+		{
+			return m_cartridge.hasExtendedRAM();
+		}
+
+		static std::unique_ptr<Mapper>
+		createMapper(Type mapper_t, Cartridge &cart, std::function<void(void)> mirroring_cb);
+
+	protected:
+		Cartridge &m_cartridge;
+		Type m_type;
+	};
 }
 
 #endif //MAPPER_H

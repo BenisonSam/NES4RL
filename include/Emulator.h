@@ -22,7 +22,7 @@ namespace nes
 	public:
 		Emulator();
 
-		void run(std::string rom_path);
+		void run(const std::string &rom_path);
 
 		void setVideoWidth(int width);
 
@@ -50,7 +50,7 @@ namespace nes
 
 		TimePoint m_cycleTimer;
 
-		std::chrono::high_resolution_clock::duration m_elapsedTime;
+		std::chrono::high_resolution_clock::duration m_elapsedTime{};
 		std::chrono::nanoseconds m_cpuCycleDuration;
 	};
 }

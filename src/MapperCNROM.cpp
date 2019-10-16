@@ -7,13 +7,7 @@ namespace nes
 			Mapper(cart, Mapper::CNROM),
 			m_selectCHR(0)
 	{
-		if (cart.getROM().size() == 0x4000) //1 bank
-		{
-			m_oneBank = true;
-		} else //2 banks
-		{
-			m_oneBank = false;
-		}
+		m_oneBank = cart.getROM().size() == 0x4000;
 	}
 
 	Byte MapperCNROM::readPRG(Address addr)
@@ -24,10 +18,14 @@ namespace nes
 			return m_cartridge.getROM()[(addr - 0x8000) & 0x3fff];
 	}
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 	void MapperCNROM::writePRG(Address addr, Byte value)
 	{
-		m_selectCHR = value & 0x3;
+		m_selectCHR = static_cast<Address>(value & 0x3);
 	}
+
+#pragma clang diagnostic pop
 
 	const Byte *MapperCNROM::getPagePtr(Address addr)
 	{
@@ -42,8 +40,12 @@ namespace nes
 		return m_cartridge.getVROM()[addr | (m_selectCHR << 13)];
 	}
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 	void MapperCNROM::writeCHR(Address addr, Byte value)
 	{
 		LOG(Info) << "Read-only CHR memory write attempt at " << std::hex << addr << std::endl;
 	}
+
+#pragma clang diagnostic pop
 }

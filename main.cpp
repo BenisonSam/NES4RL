@@ -5,7 +5,7 @@
 
 namespace nes
 {
-	void parseControllerConf(std::string filepath,
+	void parseControllerConf(const std::string &filepath,
 							 std::vector<sf::Keyboard::Key> &p1,
 							 std::vector<sf::Keyboard::Key> &p2);
 }

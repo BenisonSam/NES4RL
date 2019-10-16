@@ -3,8 +3,7 @@
 namespace nes
 {
 	Log::~Log()
-	{
-	}
+	= default;
 
 	Log &Log::get()
 	{
@@ -56,8 +55,8 @@ namespace nes
 			return !EOF;
 		} else
 		{
-			int const r1 = m_sb1->sputc(c);
-			int const r2 = m_sb2->sputc(c);
+			int const r1 = m_sb1->sputc(static_cast<char>(c));
+			int const r2 = m_sb2->sputc(static_cast<char>(c));
 			return r1 == EOF || r2 == EOF ? EOF : c;
 		}
 	}

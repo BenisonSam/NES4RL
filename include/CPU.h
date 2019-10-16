@@ -16,7 +16,7 @@ namespace nes
 			BRK_
 		};
 
-		CPU(MainBus &mem);
+		explicit CPU(MainBus &mem);
 
 		//Assuming sequential execution, for asynchronously calling this with Execute, further work needed
 		void interrupt(InterruptType type);
@@ -27,7 +27,7 @@ namespace nes
 
 		void reset(Address start_addr);
 
-		void log();
+		// void log();
 
 		Address getPC()
 		{ return r_PC; }
@@ -58,28 +58,28 @@ namespace nes
 
 		void setZN(Byte value);
 
-		int m_skipCycles;
-		int m_cycles;
+		int m_skipCycles{};
+		int m_cycles{};
 
 		//Registers
-		Address r_PC;
-		Byte r_SP;
-		Byte r_A;
-		Byte r_X;
-		Byte r_Y;
+		Address r_PC{};
+		Byte r_SP{};
+		Byte r_A{};
+		Byte r_X{};
+		Byte r_Y{};
 
 		//Status flags.
 		//Is storing them in one byte better ?
-		bool f_C;
-		bool f_Z;
-		bool f_I;
+		bool f_C{};
+		bool f_Z{};
+		bool f_I{};
 //            bool f_B;
-		bool f_D;
-		bool f_V;
-		bool f_N;
+		bool f_D{};
+		bool f_V{};
+		bool f_N{};
 
 		MainBus &m_bus;
 	};
 
-};
+}
 #endif // CPU_H

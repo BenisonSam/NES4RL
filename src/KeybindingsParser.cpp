@@ -27,7 +27,7 @@ namespace nes
 		return s;
 	}
 
-	void parseControllerConf(std::string filepath,
+	void parseControllerConf(const std::string &filepath,
 							 std::vector<sf::Keyboard::Key> &p1,
 							 std::vector<sf::Keyboard::Key> &p2)
 	{
@@ -146,8 +146,8 @@ namespace nes
 		std::string line;
 		enum
 		{
-			Player1, Player2, None
-		} state;
+			Player1, Player2, NoPlayer
+		} state = NoPlayer;
 		unsigned int line_no = 0;
 		while (std::getline(file, line))
 		{
@@ -162,7 +162,7 @@ namespace nes
 				state = Player2;
 			} else if (state == Player1 || state == Player2)
 			{
-				auto divider = line.find("=");
+				auto divider = line.find('=');
 				auto it = std::find(std::begin(buttonStrings), std::end(buttonStrings),
 									ltrim(rtrim(line.substr(0, divider)))),
 						it2 = std::find(std::begin(keys), std::end(keys), ltrim(rtrim(line.substr(divider + 1))));

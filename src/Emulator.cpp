@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <chrono>
+#include <utility>
 
 namespace nes
 {
@@ -13,15 +14,15 @@ namespace nes
 			m_cycleTimer(),
 			m_cpuCycleDuration(std::chrono::nanoseconds(559))
 	{
-		if (!m_bus.setReadCallback(PPUSTATUS, [&](void)
+		if (!m_bus.setReadCallback(PPUSTATUS, [&](void) // NOLINT(modernize-redundant-void-arg)
 		{ return m_ppu.getStatus(); }) ||
-			!m_bus.setReadCallback(PPUDATA, [&](void)
+			!m_bus.setReadCallback(PPUDATA, [&](void) // NOLINT(modernize-redundant-void-arg)
 			{ return m_ppu.getData(); }) ||
-			!m_bus.setReadCallback(JOY1, [&](void)
+			!m_bus.setReadCallback(JOY1, [&](void) // NOLINT(modernize-redundant-void-arg)
 			{ return m_controller1.read(); }) ||
-			!m_bus.setReadCallback(JOY2, [&](void)
+			!m_bus.setReadCallback(JOY2, [&](void) // NOLINT(modernize-redundant-void-arg)
 			{ return m_controller2.read(); }) ||
-			!m_bus.setReadCallback(OAMDATA, [&](void)
+			!m_bus.setReadCallback(OAMDATA, [&](void) // NOLINT(modernize-redundant-void-arg)
 			{ return m_ppu.getOAMData(); }))
 		{
 			LOG(Error) << "Critical error: Failed to set I/O callbacks" << std::endl;
@@ -57,7 +58,7 @@ namespace nes
 								   { m_cpu.interrupt(CPU::NMI); });
 	}
 
-	void Emulator::run(std::string rom_path)
+	void Emulator::run(const std::string &rom_path)
 	{
 		if (!m_cartridge.loadFromFile(rom_path))
 			return;
@@ -79,15 +80,16 @@ namespace nes
 		m_cpu.reset();
 		m_ppu.reset();
 
-		m_window.create(sf::VideoMode(NESVideoWidth * m_screenScale, NESVideoHeight * m_screenScale),
+		m_window.create(sf::VideoMode(uint(NESVideoWidth * m_screenScale),
+									  uint(NESVideoHeight * m_screenScale)),
 						"NES4RL", sf::Style::Titlebar | sf::Style::Close);
 		m_window.setVerticalSyncEnabled(true);
-		m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, m_screenScale, sf::Color::White);
+		m_emulatorScreen.create((uint) NESVideoWidth, (uint) NESVideoHeight, m_screenScale, sf::Color::White);
 
 		m_cycleTimer = std::chrono::high_resolution_clock::now();
 		m_elapsedTime = m_cycleTimer - m_cycleTimer;
 
-		sf::Event event;
+		sf::Event event{};
 		bool focus = true, pause = false;
 		while (m_window.isOpen())
 		{
@@ -168,14 +170,14 @@ namespace nes
 
 	void Emulator::setVideoHeight(int height)
 	{
-		m_screenScale = height / float(NESVideoHeight);
+		m_screenScale = float(height) / float(NESVideoHeight);
 		LOG(Info) << "Scale: " << m_screenScale << " set. Screen: "
 				  << int(NESVideoWidth * m_screenScale) << "x" << int(NESVideoHeight * m_screenScale) << std::endl;
 	}
 
 	void Emulator::setVideoWidth(int width)
 	{
-		m_screenScale = width / float(NESVideoWidth);
+		m_screenScale = float(width) / float(NESVideoWidth);
 		LOG(Info) << "Scale: " << m_screenScale << " set. Screen: "
 				  << int(NESVideoWidth * m_screenScale) << "x" << int(NESVideoHeight * m_screenScale) << std::endl;
 

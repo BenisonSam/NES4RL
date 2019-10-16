@@ -23,7 +23,7 @@ namespace nes
 
 	void Controller::strobe(Byte b)
 	{
-		m_strobe = (b & 1);
+		m_strobe = static_cast<bool>(b & 1);
 		if (!m_strobe)
 		{
 			m_keyStates = 0;
@@ -40,13 +40,13 @@ namespace nes
 	{
 		Byte ret;
 		if (m_strobe)
-			ret = sf::Keyboard::isKeyPressed(m_keyBindings[A]);
+			ret = static_cast<Byte>(sf::Keyboard::isKeyPressed(m_keyBindings[A]));
 		else
 		{
-			ret = (m_keyStates & 1);
+			ret = static_cast<Byte>(m_keyStates & 1);
 			m_keyStates >>= 1;
 		}
-		return ret | 0x40;
+		return static_cast<Byte>(ret | 0x40);
 	}
 
 }

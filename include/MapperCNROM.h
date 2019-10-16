@@ -8,17 +8,17 @@ namespace nes
 	class MapperCNROM : public Mapper
 	{
 	public:
-		MapperCNROM(Cartridge &cart);
+		explicit MapperCNROM(Cartridge &cart);
 
-		void writePRG(Address addr, Byte value);
+		void writePRG(Address addr, Byte value) override;
 
-		Byte readPRG(Address addr);
+		Byte readPRG(Address addr) override;
 
-		const Byte *getPagePtr(Address addr);
+		const Byte *getPagePtr(Address addr) override;
 
-		Byte readCHR(Address addr);
+		Byte readCHR(Address addr) override;
 
-		void writeCHR(Address addr, Byte value);
+		void writeCHR(Address addr, Byte value) override;
 
 	private:
 		bool m_oneBank;

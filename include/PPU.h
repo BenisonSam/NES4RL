@@ -77,31 +77,31 @@ namespace nes
 			PostRender,
 			VerticalBlank
 		} m_pipelineState;
-		int m_cycle;
-		int m_scanline;
-		bool m_evenFrame;
+		int m_cycle{};
+		int m_scanline{};
+		bool m_evenFrame{};
 
-		bool m_vblank;
-		bool m_sprZeroHit;
+		bool m_vblank{};
+		bool m_sprZeroHit{};
 
 		//Registers
-		Address m_dataAddress;
-		Address m_tempAddress;
-		Byte m_fineXScroll;
-		bool m_firstWrite;
-		Byte m_dataBuffer;
+		Address m_dataAddress{};
+		Address m_tempAddress{};
+		Byte m_fineXScroll{};
+		bool m_firstWrite{};
+		Byte m_dataBuffer{};
 
-		Byte m_spriteDataAddress;
+		Byte m_spriteDataAddress{};
 
 		//Setup flags and variables
-		bool m_longSprites;
-		bool m_generateInterrupt;
+		bool m_longSprites{};
+		bool m_generateInterrupt{};
 
-		bool m_greyscaleMode;
-		bool m_showSprites;
-		bool m_showBackground;
-		bool m_hideEdgeSprites;
-		bool m_hideEdgeBackground;
+		bool m_greyscaleMode{};
+		bool m_showSprites{};
+		bool m_showBackground{};
+		bool m_hideEdgeSprites{};
+		bool m_hideEdgeBackground{};
 
 		enum CharacterPage
 		{
@@ -110,7 +110,7 @@ namespace nes
 		} m_bgPage,
 				m_sprPage;
 
-		Address m_dataAddrIncrement;
+		Address m_dataAddrIncrement{};
 
 		std::vector<std::vector<sf::Color>> m_pictureBuffer;
 	};

@@ -24,7 +24,7 @@ namespace nes
 
 	private:
 		std::vector<Byte> m_RAM;
-		std::size_t NameTable0, NameTable1, NameTable2, NameTable3; //indices where they start in RAM vector
+		std::size_t NameTable0{}, NameTable1{}, NameTable2{}, NameTable3{}; //indices where they start in RAM vector
 
 		std::vector<Byte> m_palette;
 

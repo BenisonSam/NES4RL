@@ -1,11 +1,13 @@
 #include "MapperSxROM.h"
+
+#include <utility>
 #include "Log.h"
 
 namespace nes
 {
 	MapperSxROM::MapperSxROM(Cartridge &cart, std::function<void(void)> mirroring_cb) :
 			Mapper(cart, Mapper::SxROM),
-			m_mirroringCallback(mirroring_cb),
+			m_mirroringCallback(std::move(mirroring_cb)),
 			m_mirroing(Horizontal),
 			m_modeCHR(0),
 			m_modePRG(3),
@@ -19,7 +21,7 @@ namespace nes
 			m_firstBankCHR(nullptr),
 			m_secondBankCHR(nullptr)
 	{
-		if (cart.getVROM().size() == 0)
+		if (cart.getVROM().empty())
 		{
 			m_usesCharacterRAM = true;
 			m_characterRAM.resize(0x2000);
@@ -53,7 +55,7 @@ namespace nes
 	{
 		if (!(value & 0x80)) //if reset bit is NOT set
 		{
-			m_tempRegister = (m_tempRegister >> 1) | ((value & 1) << 4);
+			m_tempRegister = static_cast<Byte>((m_tempRegister >> 1) | ((value & 1) << 4));
 			++m_writeCounter;
 
 			if (m_writeCounter == 5)

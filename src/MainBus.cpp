@@ -1,5 +1,4 @@
 #include "MainBus.h"
-#include <cstring>
 #include "Log.h"
 
 namespace nes
@@ -130,7 +129,7 @@ namespace nes
 		return true;
 	}
 
-	bool MainBus::setWriteCallback(IORegisters reg, std::function<void(Byte)> callback)
+	bool MainBus::setWriteCallback(IORegisters reg, const std::function<void(Byte)> &callback)
 	{
 		if (!callback)
 		{
@@ -140,7 +139,7 @@ namespace nes
 		return m_writeCallbacks.emplace(reg, callback).second;
 	}
 
-	bool MainBus::setReadCallback(IORegisters reg, std::function<Byte(void)> callback)
+	bool MainBus::setReadCallback(IORegisters reg, const std::function<Byte(void)> &callback)
 	{
 		if (!callback)
 		{
@@ -150,4 +149,4 @@ namespace nes
 		return m_readCallbacks.emplace(reg, callback).second;
 	}
 
-};
+}

@@ -36,9 +36,9 @@ namespace nes
 
 		bool setMapper(Mapper *mapper);
 
-		bool setWriteCallback(IORegisters reg, std::function<void(Byte)> callback);
+		bool setWriteCallback(IORegisters reg, const std::function<void(Byte)> &callback);
 
-		bool setReadCallback(IORegisters reg, std::function<Byte(void)> callback);
+		bool setReadCallback(IORegisters reg, const std::function<Byte(void)> &callback);
 
 		const Byte *getPagePtr(Byte page);
 
@@ -50,6 +50,6 @@ namespace nes
 		std::map<IORegisters, std::function<void(Byte)>> m_writeCallbacks;
 		std::map<IORegisters, std::function<Byte(void)>> m_readCallbacks;;
 	};
-};
+}
 
 #endif // MEMORY_H

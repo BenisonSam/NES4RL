@@ -7,7 +7,7 @@ namespace nes
 			Mapper(cart, Mapper::UxROM),
 			m_selectPRG(0)
 	{
-		if (cart.getVROM().size() == 0)
+		if (cart.getVROM().empty())
 		{
 			m_usesCharacterRAM = true;
 			m_characterRAM.resize(0x2000);
@@ -26,10 +26,14 @@ namespace nes
 			return *(m_lastBankPtr + (addr & 0x3fff));
 	}
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 	void MapperUxROM::writePRG(Address addr, Byte value)
 	{
 		m_selectPRG = value;
 	}
+
+#pragma clang diagnostic pop
 
 	const Byte *MapperUxROM::getPagePtr(Address addr)
 	{

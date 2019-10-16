@@ -6,15 +6,9 @@ namespace nes
 	MapperNROM::MapperNROM(Cartridge &cart) :
 			Mapper(cart, Mapper::NROM)
 	{
-		if (cart.getROM().size() == 0x4000) //1 bank
-		{
-			m_oneBank = true;
-		} else //2 banks
-		{
-			m_oneBank = false;
-		}
+		m_oneBank = cart.getROM().size() == 0x4000;
 
-		if (cart.getVROM().size() == 0)
+		if (cart.getVROM().empty())
 		{
 			m_usesCharacterRAM = true;
 			m_characterRAM.resize(0x2000);

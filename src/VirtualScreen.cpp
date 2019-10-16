@@ -50,7 +50,7 @@ namespace nes
 		if (index >= m_vertices.getVertexCount())
 			return;
 
-		sf::Vector2f coord2d(x * m_pixelSize, y * m_pixelSize);
+		// sf::Vector2f coord2d(x * m_pixelSize, y * m_pixelSize);
 
 		//Triangle-1
 		//top-left

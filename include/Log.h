@@ -12,7 +12,7 @@
 #endif
 
 #define LOG(level) \
-if (level > nes::Log::get().getLevel()) ; \
+if ((level) > nes::Log::get().getLevel()) ; \
 else nes::Log::get().getStream() << '[' << __FILENAME__ << ":" << std::dec << __LINE__ << "] "
 
 #define LOG_CPU \
@@ -87,5 +87,5 @@ namespace nes
 		TeeBuf m_tbuf;
 	};
 
-};
+}
 #endif // LOG_H

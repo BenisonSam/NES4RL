@@ -1,4 +1,6 @@
 #include "Mapper.h"
+
+#include <utility>
 #include "MapperNROM.h"
 #include "MapperSxROM.h"
 #include "MapperUxROM.h"
@@ -21,7 +23,7 @@ namespace nes
 				ret.reset(new MapperNROM(cart));
 				break;
 			case SxROM:
-				ret.reset(new MapperSxROM(cart, mirroring_cb));
+				ret.reset(new MapperSxROM(cart, std::move(mirroring_cb)));
 				break;
 			case UxROM:
 				ret.reset(new MapperUxROM(cart));

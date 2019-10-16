@@ -1,4 +1,6 @@
 #include "PPU.h"
+
+#include <utility>
 #include "Log.h"
 
 namespace nes
@@ -15,7 +17,7 @@ namespace nes
 		m_longSprites = m_generateInterrupt = m_greyscaleMode = m_vblank = false;
 		m_showBackground = m_showSprites = m_evenFrame = m_firstWrite = true;
 		m_bgPage = m_sprPage = Low;
-		m_dataAddress = m_cycle = m_scanline = m_spriteDataAddress = m_fineXScroll = m_tempAddress = 0;
+		m_dataAddress = static_cast<Address>(m_cycle = m_scanline = m_spriteDataAddress = m_fineXScroll = static_cast<Byte>(m_tempAddress = 0));
 		//m_baseNameTable = 0x2000;
 		m_dataAddrIncrement = 1;
 		m_pipelineState = PreRender;
@@ -25,7 +27,7 @@ namespace nes
 
 	void PPU::setInterruptCallback(std::function<void(void)> cb)
 	{
-		m_vblankCallback = cb;
+		m_vblankCallback = std::move(cb);
 	}
 
 	void PPU::step()
@@ -73,22 +75,23 @@ namespace nes
 							//fetch tile
 							auto addr = 0x2000 | (m_dataAddress & 0x0FFF); //mask off fine y
 							//auto addr = 0x2000 + x / 8 + (y / 8) * (ScanlineVisibleDots / 8);
-							Byte tile = read(addr);
+							Byte tile = read(static_cast<Address>(addr));
 
 							//fetch pattern
 							//Each pattern occupies 16 bytes, so multiply by 16
 							addr = (tile * 16) + ((m_dataAddress >> 12/*y % 8*/) & 0x7); //Add fine y
 							addr |= m_bgPage << 12; //set whether the pattern is in the high or low page
 							//Get the corresponding bit determined by (8 - x_fine) from the right
-							bgColor = (read(addr) >> (7 ^ x_fine)) & 1; //bit 0 of palette entry
-							bgColor |= ((read(addr + 8) >> (7 ^ x_fine)) & 1) << 1; //bit 1
+							bgColor = static_cast<Byte>((read(static_cast<Address>(addr)) >> (7 ^ x_fine)) &
+														1); //bit 0 of palette entry
+							bgColor |= ((read(static_cast<Address>(addr + 8)) >> (7 ^ x_fine)) & 1) << 1; //bit 1
 
 							bgOpaque = bgColor; //flag used to calculate final pixel with the sprite pixel
 
 							//fetch attribute and calculate higher two bits of palette
 							addr = 0x23C0 | (m_dataAddress & 0x0C00) | ((m_dataAddress >> 4) & 0x38)
 								   | ((m_dataAddress >> 2) & 0x07);
-							auto attribute = read(addr);
+							auto attribute = read(static_cast<Address>(addr));
 							int shift = ((m_dataAddress >> 4) & 4) | (m_dataAddress & 2);
 							//Extract and set the upper two bits for the color
 							bgColor |= ((attribute >> shift) & 0x3) << 2;
@@ -114,7 +117,7 @@ namespace nes
 							if (0 > x - spr_x || x - spr_x >= 8)
 								continue;
 
-							Byte spr_y = m_spriteMemory[i * 4 + 0] + 1,
+							Byte spr_y = static_cast<Byte>(m_spriteMemory[i * 4 + 0] + 1),
 									tile = m_spriteMemory[i * 4 + 1],
 									attribute = m_spriteMemory[i * 4 + 2];
 
@@ -131,18 +134,18 @@ namespace nes
 
 							if (!m_longSprites)
 							{
-								addr = tile * 16 + y_offset;
+								addr = static_cast<Address>(tile * 16 + y_offset);
 								if (m_sprPage == High) addr += 0x1000;
 							} else //8x16 sprites
 							{
 								//bit-3 is one if it is the bottom tile of the sprite, multiply by two to get the next pattern
 								y_offset = (y_offset & 7) | ((y_offset & 8) << 1);
-								addr = (tile >> 1) * 32 + y_offset;
+								addr = static_cast<Address>((tile >> 1) * 32 + y_offset);
 								addr |= (tile & 1) << 12; //Bank 0x1000 if bit-0 is high
 							}
 
 							sprColor |= (read(addr) >> (x_shift)) & 1; //bit 0 of palette entry
-							sprColor |= ((read(addr + 8) >> (x_shift)) & 1) << 1; //bit 1
+							sprColor |= ((read(static_cast<Address>(addr + 8)) >> (x_shift)) & 1) << 1; //bit 1
 
 							if (!(sprOpaque = sprColor))
 							{
@@ -193,7 +196,7 @@ namespace nes
 							y = 0;                                // coarse Y = 0, nametable not switched
 						else
 							y += 1;                               // increment coarse Y
-						m_dataAddress = (m_dataAddress & ~0x03E0) | (y << 5);
+						m_dataAddress = static_cast<Address>((m_dataAddress & ~0x03E0) | (y << 5));
 						// put coarse Y back into m_dataAddress
 					}
 				} else if (m_cycle == ScanlineVisibleDots + 2 && m_showBackground && m_showSprites)
@@ -219,12 +222,12 @@ namespace nes
 						range = 16;
 
 					std::size_t j = 0;
-					for (std::size_t i = m_spriteDataAddress / 4; i < 64; ++i)
+					for (auto i = static_cast<size_t>(m_spriteDataAddress / 4); i < 64; ++i)
 					{
 						auto diff = (m_scanline - m_spriteMemory[i * 4]);
 						if (0 <= diff && diff < range)
 						{
-							m_scanlineSprites.push_back(i);
+							m_scanlineSprites.push_back(static_cast<unsigned char &&>(i));
 							++j;
 							if (j >= 8)
 							{
@@ -248,9 +251,9 @@ namespace nes
 					m_cycle = 0;
 					m_pipelineState = VerticalBlank;
 
-					for (int x = 0; x < m_pictureBuffer.size(); ++x)
+					for (ulong x = 0; x < m_pictureBuffer.size(); ++x)
 					{
-						for (int y = 0; y < m_pictureBuffer[0].size(); ++y)
+						for (ulong y = 0; y < m_pictureBuffer[0].size(); ++y)
 						{
 							m_screen.setPixel(x, y, m_pictureBuffer[x][y]);
 						}
@@ -304,7 +307,8 @@ namespace nes
 
 	void PPU::doDMA(const Byte *page_ptr)
 	{
-		std::memcpy(m_spriteMemory.data() + m_spriteDataAddress, page_ptr, 256 - m_spriteDataAddress);
+		std::memcpy(m_spriteMemory.data() + m_spriteDataAddress, page_ptr,
+					static_cast<size_t>(256 - m_spriteDataAddress));
 		if (m_spriteDataAddress)
 			std::memcpy(m_spriteMemory.data(), page_ptr + (256 - m_spriteDataAddress), m_spriteDataAddress);
 		//std::memcpy(m_spriteMemory.data(), page_ptr, 256);
@@ -312,8 +316,8 @@ namespace nes
 
 	void PPU::control(Byte ctrl)
 	{
-		m_generateInterrupt = ctrl & 0x80;
-		m_longSprites = ctrl & 0x20;
+		m_generateInterrupt = static_cast<bool>(ctrl & 0x80);
+		m_longSprites = static_cast<bool>(ctrl & 0x20);
 		m_bgPage = static_cast<CharacterPage>(!!(ctrl & 0x10));
 		m_sprPage = static_cast<CharacterPage>(!!(ctrl & 0x8));
 		if (ctrl & 0x4)
@@ -329,17 +333,17 @@ namespace nes
 
 	void PPU::setMask(Byte mask)
 	{
-		m_greyscaleMode = mask & 0x1;
+		m_greyscaleMode = static_cast<bool>(mask & 0x1);
 		m_hideEdgeBackground = !(mask & 0x2);
 		m_hideEdgeSprites = !(mask & 0x4);
-		m_showBackground = mask & 0x8;
-		m_showSprites = mask & 0x10;
+		m_showBackground = static_cast<bool>(mask & 0x8);
+		m_showSprites = static_cast<bool>(mask & 0x10);
 	}
 
 	Byte PPU::getStatus()
 	{
-		Byte status = m_sprZeroHit << 6 |
-					  m_vblank << 7;
+		Byte status = static_cast<Byte>(m_sprZeroHit << 6 |
+										m_vblank << 7);
 		//m_dataAddress = 0;
 		m_vblank = false;
 		m_firstWrite = true;
@@ -405,7 +409,7 @@ namespace nes
 		{
 			m_tempAddress &= ~0x1f;
 			m_tempAddress |= (scroll >> 3) & 0x1f;
-			m_fineXScroll = scroll & 0x7;
+			m_fineXScroll = static_cast<Byte>(scroll & 0x7);
 			m_firstWrite = false;
 		} else
 		{

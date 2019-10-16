@@ -38,7 +38,7 @@ namespace nes
 		return m_extendedRAM;
 	}
 
-	bool Cartridge::loadFromFile(std::string path)
+	bool Cartridge::loadFromFile(const std::string &path)
 	{
 		std::ifstream romFile(path, std::ios_base::binary | std::ios_base::in);
 		if (!romFile)
@@ -79,13 +79,13 @@ namespace nes
 		Byte vbanks = header[5];
 		LOG(Info) << "8KB CHR-ROM Banks: " << +vbanks << std::endl;
 
-		m_nameTableMirroring = header[6] & 0xB;
+		m_nameTableMirroring = static_cast<Byte>(header[6] & 0xB);
 		LOG(Info) << "Name Table Mirroring: " << +m_nameTableMirroring << std::endl;
 
-		m_mapperNumber = ((header[6] >> 4) & 0xf) | (header[7] & 0xf0);
+		m_mapperNumber = static_cast<Byte>(((header[6] >> 4) & 0xf) | (header[7] & 0xf0));
 		LOG(Info) << "Mapper #: " << +m_mapperNumber << std::endl;
 
-		m_extendedRAM = header[6] & 0x2;
+		m_extendedRAM = static_cast<bool>(header[6] & 0x2);
 		LOG(Info) << "Extended (CPU) RAM: " << std::boolalpha << m_extendedRAM << std::endl;
 
 		if (header[6] & 0x4)
@@ -101,7 +101,7 @@ namespace nes
 		} else LOG(Info) << "ROM is NTSC compatible.\n";
 
 		//PRG-ROM 16KB banks
-		m_PRG_ROM.resize(0x4000 * banks);
+		m_PRG_ROM.resize(static_cast<unsigned long>(0x4000 * banks));
 		if (!romFile.read(reinterpret_cast<char *>(&m_PRG_ROM[0]), 0x4000 * banks))
 		{
 			LOG(Error) << "Reading PRG-ROM from image file failed." << std::endl;
@@ -111,7 +111,7 @@ namespace nes
 		//CHR-ROM 8KB banks
 		if (vbanks)
 		{
-			m_CHR_ROM.resize(0x2000 * vbanks);
+			m_CHR_ROM.resize(static_cast<unsigned long>(0x2000 * vbanks));
 			if (!romFile.read(reinterpret_cast<char *>(&m_CHR_ROM[0]), 0x2000 * vbanks))
 			{
 				LOG(Error) << "Reading CHR-ROM from image file failed." << std::endl;

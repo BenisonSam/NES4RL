@@ -15,7 +15,7 @@ namespace nes
 	public:
 		Cartridge();
 
-		bool loadFromFile(std::string path);
+		bool loadFromFile(const std::string &path);
 
 		const std::vector<Byte> &getROM();
 
@@ -33,9 +33,9 @@ namespace nes
 		Byte m_nameTableMirroring;
 		Byte m_mapperNumber;
 		bool m_extendedRAM;
-		bool m_chrRAM;
+		bool m_chrRAM{};
 	};
 
-};
+}
 
 #endif // CARTRIDGE_H
